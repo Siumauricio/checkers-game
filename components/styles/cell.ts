@@ -9,10 +9,20 @@ export const StyledCell = styled('div', {
    variants: {
       type: {
          even: {
-            bg: '$accents0',
+            bg: '$accents2',
          },
          odd: {
-            bg: '$accents2',
+            bg: '$accents0',
+         },
+      },
+      validDropLocation: {
+         true: {
+            bg: '$success',
+         },
+      },
+      isOver: {
+         true: {
+            // backgroundColor: '#7ef3af',
          },
       },
    },

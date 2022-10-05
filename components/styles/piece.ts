@@ -25,6 +25,12 @@ export const StyledPiece = styled('button', {
                'inset 0 0 0 4px rgba(255, 255, 255, 0.2), inset 0 0 0 10px $colors$error, inset 0 0 0 30px rgba(0, 0, 0, 0.1)',
          },
       },
+      disabled: {
+         true: {
+            opacity: '0.6',
+            pointerEvents: 'none',
+         },
+      },
    },
    defaultVariants: {
       type: 'blue',
