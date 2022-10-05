@@ -75,48 +75,6 @@ export const Board = () => {
       const {x: movingPieceX, y: movingPieceY} = movingPiece.position;
    };
 
-   // const {x: moveToX, y: moveToY} = movingPiece.position;
-   // const {canMove} = checkCanMove(
-   //    isOddTurn,
-   //    movingPiece.odd,
-   //    movingPiece,
-   //    moveToX,
-   //    moveToY
-   // );
-   // console.log(canMove);
-   // if (canMove) {
-   //    const newPieces = pieces.map((piece) => {
-   //       if (piece.id === movingPiece.id) {
-   //          return {
-   //             ...piece,
-   //             position: {
-   //                x: movingPiece.position.x,
-   //                y: movingPiece.position.y,
-   //             },
-   //          };
-   //       }
-   //       return piece;
-   //    });
-   //    setPieces(newPieces);
-   //    setIsOddTurn(!isOddTurn);
-   // }
-
-   // console.log(moveToX, moveToY);
-   // const movingPieceX = movingPiece?.data?.current?.position.y as number;
-   // const movingPieceY = movingPiece?.data?.current?.position.x as number;
-   // const pieceBoard = board[movingPieceX][movingPieceY];
-   // console.log(pieceBoard);
-   // // board[movingPieceX][movingPieceY] = {
-   // //    ...pieceBoard,
-   // //    position: {},
-   // // };
-   // // console.log(movingPiece?.data.current.position);
-   // // board[movingPiece?.data.current.position.y][
-   // //    movingPiece?.data.current.position.x
-   // // ] = null;
-   // // board[over.id.y][over.id.x] = movingPiece?.data.id;
-   // console.log('Piece dropped', movingPiece?.id, ' to ', over.id);
-
    const handleDragStart = ({active}: DragStartEvent) => {
       const piece = pieces.reduce<PieceProps | undefined>((acc, row) => {
          return acc ?? row.find((cell) => cell?.id === active.id);
