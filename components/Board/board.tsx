@@ -29,30 +29,30 @@ export const Board = () => {
       if (isOddTurn && isOddPiece && movingPiece.position) {
          const {x: moveFromX, y: moveFromY} = movingPiece.position;
          if (moveFromX - 1 >= 0) {
-            const position1 = board[moveFromX - 1][moveFromY + 1];
-            if (moveToX === position1.y && moveToY === position1.x) {
+            const piece = board[moveFromX - 1][moveFromY + 1];
+            if (moveToX === piece.y && moveToY === piece.x) {
                return {canMove: true};
             }
          }
 
          if (moveFromX + 1 <= 7) {
-            const position2 = board[moveFromX + 1][moveFromY + 1];
-            if (moveToX === position2.y && moveToY === position2.x) {
+            const piece = board[moveFromX + 1][moveFromY + 1];
+            if (moveToX === piece.y && moveToY === piece.x) {
                return {canMove: true};
             }
          }
       } else if (!isOddTurn && !isOddPiece && movingPiece.position) {
          const {x: moveFromX, y: moveFromY} = movingPiece.position;
          if (moveFromX - 1 >= 0) {
-            const position1 = board[moveFromX - 1][moveFromY - 1];
-            if (moveToX === position1.y && moveToY === position1.x) {
+            const piece = board[moveFromX - 1][moveFromY - 1];
+            if (moveToX === piece.y && moveToY === piece.x) {
                return {canMove: true};
             }
          }
 
          if (moveFromX + 1 <= 7) {
-            const position2 = board[moveFromX + 1][moveFromY - 1];
-            if (moveToX === position2.y && moveToY === position2.x) {
+            const piece = board[moveFromX + 1][moveFromY - 1];
+            if (moveToX === piece.y && moveToY === piece.x) {
                return {canMove: true};
             }
          }
