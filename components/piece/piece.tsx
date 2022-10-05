@@ -1,27 +1,28 @@
-import React from 'react';
-import {StyledPiece, StyledPieceVariants} from '../styles/piece';
-import {useDraggable} from '@dnd-kit/core';
-import {CSS} from '@dnd-kit/utilities';
+import React, {forwardRef} from 'react';
+import {StyledPiece} from '../styles/piece';
 
-interface Props extends StyledPieceVariants {
+export interface PieceProps extends React.HTMLAttributes<HTMLElement> {
    id: string;
+   odd: boolean;
+   clone?: boolean;
+   position?: {x: number; y: number};
+   disabled?: boolean;
 }
 
-export const Piece = ({id, ...props}: Props) => {
-   const {attributes, listeners, setNodeRef, transform} = useDraggable({
-      id: id,
-   });
-   const style = {
-      transform: CSS.Translate.toString(transform),
-   };
-
+export const Piece = forwardRef<HTMLElement, PieceProps>(function Piece(
+   {clone, disabled, id, odd, position, ...props},
+   ref
+) {
    return (
       <StyledPiece
-         style={style}
+         ref={ref as any}
+         layout-id={id}
+         disabled={disabled}
+         type={odd ? 'blue' : 'red'}
+         data-position={JSON.stringify(position)}
+         aria-describedby={`piece id ${id}`}
+         aria-roledescription="You have selected a piece"
          {...props}
-         ref={setNodeRef}
-         {...listeners}
-         {...attributes}
       />
    );
-};
+});
