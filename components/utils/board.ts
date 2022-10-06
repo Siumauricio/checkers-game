@@ -13,12 +13,12 @@ export const generateBoard = () => {
       () => new Array(BOARD_SIZE)
    );
    let odd = false;
-   for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-         if (x % BOARD_SIZE !== 0) {
+   for (let x = 0; x < BOARD_SIZE; x++) {
+      for (let y = 0; y < BOARD_SIZE; y++) {
+         if (y % BOARD_SIZE !== 0) {
             odd = !odd;
          }
-         board[y][x] = {odd, id: `${y}-${x}`, x, y};
+         board[x][y] = {odd, id: `${x}-${y}`, x, y};
       }
    }
    return board;
@@ -31,15 +31,14 @@ export function generatePieces(board: IBoard[][]) {
    );
 
    const piecesRows = [0, 1, 2, BOARD_SIZE - 3, BOARD_SIZE - 2, BOARD_SIZE - 1];
-
-   for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
+   for (let x = 0; x < BOARD_SIZE; x++) {
+      for (let y = 0; y < BOARD_SIZE; y++) {
          const boardCase = board[y][x];
-         if (boardCase.odd && piecesRows.includes(y)) {
-            const odd = y <= BOARD_SIZE / 2;
-            pieces[y][x] = {
+         if (boardCase.odd && piecesRows.includes(x)) {
+            const odd = x <= BOARD_SIZE / 2;
+            pieces[x][y] = {
                odd,
-               id: `${y}-${x}`,
+               id: `${x}-${y}`,
                position: {x, y},
                disabled: false,
             };
