@@ -5,6 +5,7 @@ export const StyledPiece = styled('button', {
    outline: 'none',
    width: '100%',
    height: '100%',
+
    opacity: '1',
    borderRadius: '50%',
    touchAction: 'none',
@@ -13,7 +14,7 @@ export const StyledPiece = styled('button', {
    variants: {
       type: {
          blue: {
-            backgroundColor: '$blue600',
+            backgroundColor: '$primary',
             border: '1px solid $blue100',
             boxShadow:
                'inset 0 0 0 4px rgba(255, 255, 255, 0.2), inset 0 0 0 10px $colors$primary, inset 0 0 0 30px rgba(0, 0, 0, 0.1)',

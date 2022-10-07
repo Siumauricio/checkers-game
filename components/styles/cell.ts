@@ -1,10 +1,18 @@
 import {styled, VariantProps} from '@nextui-org/react';
 
 export const StyledCell = styled('div', {
-   width: '100%',
-   maxWidth: '83px',
-   height: '83px',
-   maxHeight: '83px',
+   $$size: 'calc(6vw)',
+   $$minSize: '3rem',
+   $$maxSize: 'calc(8.5vh)',
+   display: 'flex',
+   justifyContent: 'center',
+   alignItems: 'center',
+   width: '$$size',
+   maxWidth: '$$maxSize',
+   minWidth: '$$minSize',
+   height: '$$size',
+   maxHeight: '$$maxSize',
+   minHeight: '$$minSize',
    p: '8px',
    variants: {
       type: {
@@ -21,9 +29,7 @@ export const StyledCell = styled('div', {
          },
       },
       isOver: {
-         true: {
-            // backgroundColor: '#7ef3af',
-         },
+         true: {},
       },
    },
    defaultVariants: {

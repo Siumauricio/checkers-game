@@ -3,13 +3,6 @@ import {createTheme, NextUIProvider} from '@nextui-org/react';
 import {ThemeProvider as NextThemesProvider} from 'next-themes';
 import type {AppProps} from 'next/app';
 
-const lightTheme = createTheme({
-   type: 'light',
-   theme: {
-      colors: {},
-   },
-});
-
 const darkTheme = createTheme({
    type: 'dark',
    theme: {
@@ -23,11 +16,10 @@ function MyApp({Component, pageProps}: AppProps) {
          defaultTheme="system"
          attribute="class"
          value={{
-            light: lightTheme.className,
             dark: darkTheme.className,
          }}
       >
-         <NextUIProvider>
+         <NextUIProvider theme={darkTheme}>
             <Component {...pageProps} />
          </NextUIProvider>
       </NextThemesProvider>

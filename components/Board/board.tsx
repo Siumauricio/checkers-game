@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {Cell} from '../cell/cell';
 import {Piece, PieceProps} from '../piece/piece';
 import {GridBoard} from '../styles/grid-board';
@@ -8,9 +8,9 @@ import {
    DragEndEvent,
    DragOverlay,
    DragStartEvent,
-   useDraggable,
 } from '@dnd-kit/core';
 import {Score} from '../score/score';
+import {DraggablePiece} from '../piece/draggable-piece';
 
 export const Board = () => {
    const [movingPiece, setMovingPiece] = useState<PieceProps | null>(null);
@@ -20,246 +20,262 @@ export const Board = () => {
    const [blueScore, setBlueScore] = useState(0);
    const [redScore, setRedScore] = useState(0);
 
-   const checkCanMove = (
-      isOddTurn: boolean,
-      isOddPiece: boolean,
-      movingPiece: PieceProps,
-      moveToX: number,
-      moveToY: number
-   ) => {
-      if (isOddTurn && isOddPiece && movingPiece.position) {
-         const {x: moveFromX, y: moveFromY} = movingPiece.position;
+   const checkCanMove = useCallback(
+      (
+         isOddTurn: boolean,
+         isOddPiece: boolean,
+         movingPiece: PieceProps,
+         moveToX: number,
+         moveToY: number
+      ) => {
+         if (isOddTurn && isOddPiece && movingPiece.position) {
+            const {x: moveFromX, y: moveFromY} = movingPiece.position;
 
-         // Blue / Left
-         if (moveFromX - 1 >= 0 && moveFromX <= 6) {
-            const piece = pieces[moveFromX + 1][moveFromY - 1];
+            // Blue / Left
+            if (moveFromX - 1 >= 0 && moveFromX <= 6) {
+               const piece = pieces[moveFromX + 1][moveFromY - 1];
 
-            if (piece && !piece.odd) {
-               const pieceToGo = pieces[moveFromX + 2][moveFromY - 2];
+               if (piece && !piece.odd) {
+                  const pieceToGo = pieces[moveFromX + 2][moveFromY - 2];
+                  if (
+                     pieceToGo === undefined &&
+                     moveToX === moveFromX + 2 &&
+                     moveToY === moveFromY - 2
+                  ) {
+                     return {canMove: true, canRemove: true, isLeft: true};
+                  }
+               }
+
                if (
-                  pieceToGo === undefined &&
-                  moveToX === moveFromX + 2 &&
-                  moveToY === moveFromY - 2
+                  !piece &&
+                  moveToX === moveFromX + 1 &&
+                  moveToY === moveFromY - 1
                ) {
-                  return {canMove: true, canRemove: true, isLeft: true};
+                  return {canMove: true};
                }
             }
 
-            if (
-               !piece &&
-               moveToX === moveFromX + 1 &&
-               moveToY === moveFromY - 1
-            ) {
-               return {canMove: true};
-            }
-         }
+            // Blue / Right
+            if (moveFromY + 1 <= 7 && moveFromX <= 6) {
+               const piece = pieces[moveFromX + 1][moveFromY + 1];
 
-         // Blue / Right
-         if (moveFromY + 1 <= 7 && moveFromX <= 6) {
-            const piece = pieces[moveFromX + 1][moveFromY + 1];
+               if (piece && !piece.odd) {
+                  const pieceToGo = pieces[moveFromX + 2][moveFromY + 2];
+                  if (
+                     pieceToGo === undefined &&
+                     moveToX === moveFromX + 2 &&
+                     moveToY === moveFromY + 2
+                  ) {
+                     return {canMove: true, canRemove: true, isRight: true};
+                  }
+               }
 
-            if (piece && !piece.odd) {
-               const pieceToGo = pieces[moveFromX + 2][moveFromY + 2];
                if (
-                  pieceToGo === undefined &&
-                  moveToX === moveFromX + 2 &&
-                  moveToY === moveFromY + 2
+                  piece === undefined &&
+                  moveToX === moveFromX + 1 &&
+                  moveToY === moveFromY + 1
                ) {
-                  return {canMove: true, canRemove: true, isRight: true};
+                  return {canMove: true};
+               }
+            }
+            if (moveFromX === 0) {
+               let piece = pieces[moveFromX + 1][moveFromY - 1];
+
+               if (piece && !piece.odd) {
+                  const pieceToGo = pieces[moveFromX + 2][moveFromY - 2];
+
+                  if (
+                     pieceToGo === undefined &&
+                     moveToX === moveFromX + 2 &&
+                     moveToY === moveFromY - 2
+                  ) {
+                     return {canMove: true, canRemove: true, isLeft: true};
+                  }
+               }
+
+               if (
+                  !piece &&
+                  moveToX === moveFromX + 1 &&
+                  moveToY === moveFromY - 1
+               ) {
+                  return {canMove: true};
+               }
+            }
+         } else if (!isOddTurn && !isOddPiece && movingPiece.position) {
+            const {x: moveFromX, y: moveFromY} = movingPiece.position;
+
+            // Blue / Left
+            if (moveFromX - 1 >= 0) {
+               const piece = pieces[moveFromX - 1][moveFromY - 1];
+
+               if (piece && piece.odd && moveFromX - 2 >= 0) {
+                  console.log(moveFromX - 2, moveFromY - 2);
+                  const pieceToGo = pieces[moveFromX - 2][moveFromY - 2];
+                  if (
+                     pieceToGo === undefined &&
+                     moveToX === moveFromX - 2 &&
+                     moveToY === moveFromY - 2
+                  ) {
+                     return {canMove: true, canRemove: true, isLeft: true};
+                  }
+               }
+
+               if (
+                  !piece &&
+                  moveToX === moveFromX - 1 &&
+                  moveToY === moveFromY - 1
+               ) {
+                  return {canMove: true};
                }
             }
 
-            if (
-               piece === undefined &&
-               moveToX === moveFromX + 1 &&
-               moveToY === moveFromY + 1
-            ) {
-               return {canMove: true};
-            }
-         }
-         if (moveFromX === 0) {
-            let piece = pieces[moveFromX + 1][moveFromY - 1];
+            // Blue / Right
+            if (moveFromY + 1 <= 7 && moveFromX - 1 >= 0) {
+               const piece = pieces[moveFromX - 1][moveFromY + 1];
 
-            if (piece && !piece.odd) {
-               const pieceToGo = pieces[moveFromX + 2][moveFromY - 2];
+               if (piece && piece.odd && moveFromX - 2 >= 0) {
+                  const pieceToGo = pieces[moveFromX - 2][moveFromY + 2];
+                  if (
+                     pieceToGo === undefined &&
+                     moveToX === moveFromX - 2 &&
+                     moveToY === moveFromY + 2
+                  ) {
+                     return {canMove: true, canRemove: true, isRight: true};
+                  }
+               }
 
                if (
-                  pieceToGo === undefined &&
-                  moveToX === moveFromX + 2 &&
-                  moveToY === moveFromY - 2
+                  !piece &&
+                  moveToX === moveFromX - 1 &&
+                  moveToY === moveFromY + 1
                ) {
-                  return {canMove: true, canRemove: true, isLeft: true};
+                  return {canMove: true};
                }
             }
-
-            if (
-               !piece &&
-               moveToX === moveFromX + 1 &&
-               moveToY === moveFromY - 1
-            ) {
-               return {canMove: true};
-            }
          }
-      } else if (!isOddTurn && !isOddPiece && movingPiece.position) {
-         const {x: moveFromX, y: moveFromY} = movingPiece.position;
+         return {canMove: false};
+      },
+      [pieces]
+   );
 
-         // Blue / Left
-         if (moveFromX - 1 >= 0) {
-            const piece = pieces[moveFromX - 1][moveFromY - 1];
+   const movePiece = useCallback(
+      (
+         moveToX: number,
+         moveToY: number,
+         movingPieceX: number,
+         movingPieceY: number,
+         movingPiece: PieceProps
+      ) => {
+         const findPiece: PieceProps = {
+            id: moveToX + '-' + moveToY,
+            odd: movingPiece.odd,
+            position: {x: moveToX, y: moveToY},
+            disabled: false,
+         };
 
-            if (piece && piece.odd && moveFromX - 2 >= 0) {
-               console.log(moveFromX - 2, moveFromY - 2);
-               const pieceToGo = pieces[moveFromX - 2][moveFromY - 2];
-               if (
-                  pieceToGo === undefined &&
-                  moveToX === moveFromX - 2 &&
-                  moveToY === moveFromY - 2
-               ) {
-                  return {canMove: true, canRemove: true, isLeft: true};
-               }
-            }
+         const newPosition = [(pieces[moveToX][moveToY] = findPiece)];
+         const cleanOriginalPosition = [
+            (pieces[movingPieceX][movingPieceY] = undefined),
+         ];
 
-            if (
-               !piece &&
-               moveToX === moveFromX - 1 &&
-               moveToY === moveFromY - 1
-            ) {
-               return {canMove: true};
-            }
-         }
+         const updatedPieces = [...pieces, newPosition, cleanOriginalPosition];
+         // clear unused positions
+         updatedPieces.splice(8, 2);
+         return updatedPieces;
+      },
+      [pieces]
+   );
 
-         // Blue / Right
-         if (moveFromY + 1 <= 7 && moveFromX - 1 >= 0) {
-            const piece = pieces[moveFromX - 1][moveFromY + 1];
-
-            if (piece && piece.odd && moveFromX - 2 >= 0) {
-               const pieceToGo = pieces[moveFromX - 2][moveFromY + 2];
-               if (
-                  pieceToGo === undefined &&
-                  moveToX === moveFromX - 2 &&
-                  moveToY === moveFromY + 2
-               ) {
-                  return {canMove: true, canRemove: true, isRight: true};
-               }
-            }
-
-            if (
-               !piece &&
-               moveToX === moveFromX - 1 &&
-               moveToY === moveFromY + 1
-            ) {
-               return {canMove: true};
-            }
-         }
-      }
-      return {canMove: false};
-   };
-
-   const movePiece = (
-      moveToX: number,
-      moveToY: number,
-      movingPieceX: number,
-      movingPieceY: number,
-      movingPiece: PieceProps
-   ) => {
-      const findPiece: PieceProps = {
-         id: moveToX + '-' + moveToY,
-         odd: movingPiece.odd,
-         position: {x: moveToX, y: moveToY},
-         disabled: false,
-      };
-
-      const newPosition = [(pieces[moveToX][moveToY] = findPiece)];
-      const cleanOriginalPosition = [
-         (pieces[movingPieceX][movingPieceY] = undefined),
-      ];
-
-      const updatedPieces = [...pieces, newPosition, cleanOriginalPosition];
-      // clear unused positions
-      updatedPieces.splice(8, 2);
-      return updatedPieces;
-   };
-
-   const handleDragEnd = (event: DragEndEvent) => {
-      if (!movingPiece?.position || !event.over?.id) {
-         return;
-      }
-
-      const {x: movingPieceX, y: movingPieceY} = movingPiece.position;
-      const [moveToX, moveToY] = event.over.id
-         .toString()
-         .split('-')
-         .map(Number);
-
-      const {canMove, canRemove, isLeft, isRight} = checkCanMove(
-         isOddTurn,
-         movingPiece.odd,
-         movingPiece,
-         moveToX,
-         moveToY
-      );
-
-      if (canMove && !canRemove) {
-         if (pieces[moveToX][moveToY]) {
+   const handleDragEnd = useCallback(
+      (event: DragEndEvent) => {
+         if (!movingPiece?.position || !event.over?.id) {
             return;
          }
 
-         const newPieces = movePiece(
+         const {x: movingPieceX, y: movingPieceY} = movingPiece.position;
+         const [moveToX, moveToY] = event.over.id
+            .toString()
+            .split('-')
+            .map(Number);
+
+         const {canMove, canRemove, isRight} = checkCanMove(
+            isOddTurn,
+            movingPiece.odd,
+            movingPiece,
             moveToX,
-            moveToY,
-            movingPieceX,
-            movingPieceY,
-            movingPiece
+            moveToY
          );
 
-         setIsOddTurn(!isOddTurn);
-         setPieces(newPieces);
-      }
+         if (canMove && !canRemove) {
+            if (pieces[moveToX][moveToY]) {
+               return;
+            }
 
-      if (canMove && canRemove) {
-         let cleanOriginalPosition: undefined[] = [];
+            const newPieces = movePiece(
+               moveToX,
+               moveToY,
+               movingPieceX,
+               movingPieceY,
+               movingPiece
+            );
 
-         if (isRight && movingPiece.odd) {
-            cleanOriginalPosition = [
-               (pieces[movingPieceX + 1][movingPieceY + 1] = undefined),
-            ];
-            setBlueScore(blueScore + 1);
-         }
-         if (isLeft && movingPiece.odd) {
-            cleanOriginalPosition = [
-               (pieces[movingPieceX + 1][movingPieceY - 1] = undefined),
-            ];
-            setBlueScore(blueScore + 1);
+            setIsOddTurn(!isOddTurn);
+            setPieces(newPieces);
          }
 
-         if (isRight && !movingPiece.odd) {
-            cleanOriginalPosition = [
-               (pieces[movingPieceX - 1][movingPieceY + 1] = undefined),
-            ];
+         if (canMove && canRemove) {
+            let cleanEnemy: undefined[] = [];
 
-            setRedScore(redScore + 1);
+            if (movingPiece.odd) {
+               if (isRight) {
+                  cleanEnemy = [
+                     (pieces[movingPieceX + 1][movingPieceY + 1] = undefined),
+                  ];
+               } else {
+                  cleanEnemy = [
+                     (pieces[movingPieceX + 1][movingPieceY - 1] = undefined),
+                  ];
+               }
+               setBlueScore(blueScore + 1);
+            }
+
+            if (!movingPiece.odd) {
+               if (isRight) {
+                  cleanEnemy = [
+                     (pieces[movingPieceX - 1][movingPieceY + 1] = undefined),
+                  ];
+               } else {
+                  cleanEnemy = [
+                     (pieces[movingPieceX - 1][movingPieceY - 1] = undefined),
+                  ];
+               }
+               setRedScore(redScore + 1);
+            }
+
+            const newPieces = movePiece(
+               moveToX,
+               moveToY,
+               movingPieceX,
+               movingPieceY,
+               movingPiece
+            );
+
+            setPieces([...newPieces, cleanEnemy]);
+            setIsOddTurn(!isOddTurn);
          }
 
-         if (isLeft && !movingPiece.odd) {
-            cleanOriginalPosition = [
-               (pieces[movingPieceX - 1][movingPieceY - 1] = undefined),
-            ];
-            setRedScore(redScore + 1);
-         }
-         const newPieces = movePiece(
-            moveToX,
-            moveToY,
-            movingPieceX,
-            movingPieceY,
-            movingPiece
-         );
-
-         setPieces([...newPieces, cleanOriginalPosition]);
-         setIsOddTurn(!isOddTurn);
-      }
-
-      setMovingPiece(null);
-   };
+         setMovingPiece(null);
+      },
+      [
+         blueScore,
+         checkCanMove,
+         isOddTurn,
+         movePiece,
+         movingPiece,
+         pieces,
+         redScore,
+      ]
+   );
 
    const handleDragStart = ({active}: DragStartEvent) => {
       const piece = pieces.reduce<PieceProps | undefined>((acc, row) => {
@@ -316,8 +332,6 @@ export const Board = () => {
 
                   return (
                      <Cell key={rowCase.id} {...rowCase}>
-                        {/* {x} - {y}
-                        {x} - {y} */}
                         {pieceMarkup}
                      </Cell>
                   );
@@ -332,19 +346,3 @@ export const Board = () => {
       </DndContext>
    );
 };
-function DraggablePiece(props: PieceProps) {
-   const {attributes, isDragging, listeners, setNodeRef} = useDraggable({
-      id: props.id,
-   });
-   return (
-      <Piece
-         ref={setNodeRef}
-         style={{
-            opacity: isDragging ? 0.5 : undefined,
-         }}
-         {...props}
-         {...attributes}
-         {...listeners}
-      />
-   );
-}

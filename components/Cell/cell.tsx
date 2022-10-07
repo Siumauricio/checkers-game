@@ -19,7 +19,6 @@ export const Cell = ({
    odd,
    x,
    y,
-   ...props
 }: Props) => {
    const {isOver, setNodeRef} = useDroppable({
       id: id,
@@ -32,7 +31,6 @@ export const Cell = ({
          isOver={isOver}
          data-x={x}
          data-y={y}
-         // {...props}
       >
          {children}
       </StyledCell>

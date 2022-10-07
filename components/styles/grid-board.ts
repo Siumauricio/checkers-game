@@ -1,25 +1,26 @@
 import {styled} from '@nextui-org/react';
 
 export const GridBoard = styled('div', {
-   'display': 'grid',
+   'display': 'inline-grid',
    'boxSizing': 'border-box',
-   'boxShadow': '$lg',
+   'boxShadow': `0 0 0 10px $colors$accents3, 0 0 0 20px  $colors$accents5,
+   0 30px 60px -12px rgba(50, 50, 92, 0.3),
+   0 18px 36px -18px rgba(0, 0, 0, 0.3);`,
    'borderRadius': '$md',
-   'border': '8px solid $border',
    'width': '100%',
-   'maxWidth': '620px',
+   'maxWidth': 'fit-content',
    'bg': '$accents6',
    '& div:last-child': {
-      borderBottomRightRadius: '$lg',
+      borderBottomRightRadius: '$md',
    },
    '& div:first-child': {
-      borderTopLeftRadius: '$lg',
+      borderTopLeftRadius: '$md',
    },
    '& div:nth-child(8)': {
-      borderTopRightRadius: '$lg',
+      borderTopRightRadius: '$md',
    },
    '& div:nth-child(57)': {
-      borderBottomLeftRadius: '$lg',
+      borderBottomLeftRadius: '$md',
    },
-   'gridTemplateColumns': 'repeat(8, 1fr)',
+   'gridTemplateColumns': 'repeat(8, max-content)',
 });

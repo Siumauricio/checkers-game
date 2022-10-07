@@ -13,10 +13,10 @@ export const MainLayout = ({children}: Props) => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: '100vh',
+            px: '$6',
+            height: '100vh',
             maxWidth: '100vw',
             backgroundColor: '$accents0',
-            gap: '$10',
          }}
       >
          {children}
