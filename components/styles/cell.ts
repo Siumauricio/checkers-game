@@ -3,7 +3,7 @@ import {styled, VariantProps} from '@nextui-org/react';
 export const StyledCell = styled('div', {
    $$size: 'calc(6vw)',
    $$minSize: '3rem',
-   $$maxSize: 'calc(8.5vh)',
+   $$maxSize: 'calc(8.2vh)',
    display: 'flex',
    justifyContent: 'center',
    alignItems: 'center',
