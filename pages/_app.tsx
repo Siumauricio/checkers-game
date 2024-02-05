@@ -11,6 +11,7 @@ const darkTheme = createTheme({
 });
 
 function MyApp({Component, pageProps}: AppProps) {
+   asdasdfadsf asdf asdf .asd fasdf asdf
    return (
       <NextThemesProvider
          defaultTheme="system"
